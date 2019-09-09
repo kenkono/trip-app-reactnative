@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, Alert, Dimensions } from 'react-native';
+import {
+  StyleSheet, Text, View, ScrollView,
+  Image, AsyncStorage, Dimensions, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -10,7 +12,28 @@ const SLIDE_DATA = [
 ];
 
 class WelcomeScreen extends React.Component {
-  onStartButtonPress = () => {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isInitialized: null
+    };
+  }
+
+  async componentDidMount() {
+  let isInitializedString = await AsyncStorage.getItem('isInitialized');
+
+  if (isInitializedString === 'true') {
+    this.setState({ isInitialized: true });
+    this.props.navigation.navigate('main');
+  } else {
+    this.setState({ isInitialized: false });
+  }
+}
+
+  onStartButtonPress = async () => {
+    await AsyncStorage.setItem('isInitialized', 'true');
+
     this.props.navigation.navigate('main');
   }
 
@@ -55,6 +78,9 @@ class WelcomeScreen extends React.Component {
   }
 
   render() {
+    if (this.state.isInitialized === null) {
+      return <ActivityIndicator size="large" />;
+    }
     return (
       <ScrollView
       horizontal

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
 import {
   createAppContainer,
   createSwitchNavigator,
@@ -51,7 +51,12 @@ export default class App extends React.Component {
     };
 
     const AddStack = createStackNavigator({
-      add: { screen: AddScreen }
+      add: {
+        screen: AddScreen,
+        navigationOptions: {
+          header: null
+        }
+      }
     });
 
     AddStack.navigationOptions = ({ navigation }) => {
@@ -61,9 +66,28 @@ export default class App extends React.Component {
     };
 
     const ProfileStack = createStackNavigator({
-      profile: { screen: ProfileScreen },
-      setting1: { screen: Setting1Screen },
-      setting2: { screen: Setting2Screen },
+      profile: {
+        screen: ProfileScreen,
+        navigationOptions: {
+          ...headerNavigationOptions,
+          headerTitle: 'Treco',
+          headerBackTitle: 'Profile'
+        }
+      },
+      setting1: {
+        screen: Setting1Screen,
+        navigationOptions: {
+          ...headerNavigationOptions,
+          headerTitle: 'Setting 1',
+        }
+      },
+      setting2: {
+        screen: Setting2Screen,
+        navigationOptions: {
+          ...headerNavigationOptions,
+          headerTitle: 'Setting 2',
+        }
+         },
     });
 
     ProfileStack.navigationOptions = ({ navigation }) => {
@@ -73,9 +97,44 @@ export default class App extends React.Component {
     };
 
     const MainTab = createBottomTabNavigator({
-      homeStack: { screen: HomeStack },
-      addStack: { screen: AddStack },
-      profileStack: { screen: ProfileStack }
+      homeStack: {
+      screen: HomeStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Image
+            style={{ height: 25, width: 25, tintColor }}
+            source={require('./assets/home.png')}
+          />
+        ),
+        title: 'Home'
+      }
+      },
+      addStack: {
+        screen: AddStack,
+        navigationOptions: {
+          tabBarIcon: () => (
+            <Image
+              style={{ height: 60, width: 60, tintColor: 'deepskyblue' }}
+              source={require('./assets/add.png')}
+            />
+          ),
+          title: '',
+        }
+        },
+      profileStack: {
+        screen: ProfileStack,
+        navigationOptions: {
+          tabBarIcon: ({ tintColor }) => (
+            <Image
+              style={{ height: 25, width: 25, tintColor }}
+              source={require('./assets/profile.png')}
+            />
+          ),
+          title: 'Profile'
+        }
+      }
+    }, {
+      swipeEnabled: false,
     });
 
     const NavigatorTab = createAppContainer(
@@ -87,6 +146,7 @@ export default class App extends React.Component {
 
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <NavigatorTab />
       </View>
     );
